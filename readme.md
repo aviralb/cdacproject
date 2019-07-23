@@ -1,7 +1,7 @@
 Aviral Bhardwaj And Shubhangi Gautam Major Project On Airline Data Analysis At CDAC
 =============
 
-This repo contains data set and queries I use in my presentations on SQL-on-Hive (i.e. Impala and hive) at various conferences. This started off as a repo that was use in my presentation at CloudCon in San Francisco, so the name of the repo reflects that but now this repo has morphed into a single repository that contains my dataset for demos and such at various different presentations on Hive and Impala.
+This repo contains data set and queries I use in my CDAC Major Project on SQL-on-Hive (i.e.  hive,pig,scala,pyspark) at IACSD CDAC. 
 
 Files in the repository
 =======================
