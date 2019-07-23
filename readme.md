@@ -6,7 +6,7 @@ This repo contains data set and queries I use in my presentations on SQL-on-Hive
 Files in the repository
 =======================
 * [2008.tar.gz](http://stat-computing.org/dataexpo/2009/2008.csv.bz2): Flight delay dataset from 2008.
-* [airports.csv](#): Dataset linking airport codes to their full names. More details in [Introduction](http://stat-computing.org/dataexpo/2009/) section.
+* [airports.csv](https://github.com/aviralb/cdacproject/blob/master/airport.csv): Dataset linking airport codes to their full names. More details in [Introduction](http://stat-computing.org/dataexpo/2009/) section.
 
 
 Datasets
