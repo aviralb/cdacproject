@@ -1,4 +1,4 @@
-cloudcon-hive
+Aviral Bhardwaj And Shubhangi Gautam Major Project On Airline Data Analysis At CDAC
 =============
 
 This repo contains data set and queries I use in my presentations on SQL-on-Hive (i.e. Impala and hive) at various conferences. This started off as a repo that was use in my presentation at CloudCon in San Francisco, so the name of the repo reflects that but now this repo has morphed into a single repository that contains my dataset for demos and such at various different presentations on Hive and Impala.
@@ -6,8 +6,8 @@ This repo contains data set and queries I use in my presentations on SQL-on-Hive
 Files in the repository
 =======================
 * [2008.tar.gz](http://stat-computing.org/dataexpo/2009/2008.csv.bz2): Flight delay dataset from 2008.
-* [airports.csv](#): Dataset linking airport codes to their full names. More details in [Introduction](https://github.com/markgrover/bdtc-hive/blob/master/1-Introduction.md) section.
-* [README.md](#): This file.
+* [airports.csv](#): Dataset linking airport codes to their full names. More details in [Introduction](http://stat-computing.org/dataexpo/2009/) section.
+
 
 Datasets
 ========
@@ -23,23 +23,16 @@ Setup
 You will need a box with Hadoop and Hive installed. Easiest way to get it to install one of the Demo VMs or use packages available from Apache Bigtop. Cloudera Demo VMs are available from [Cloudera's website](https://ccp.cloudera.com/display/SUPPORT/Cloudera+QuickStart+VM). You can learn more about Apache Bigtop and install integration test Apache Hadoop and Hive by going to the [project's main page](bigtop.apache.org) and the [project's wiki](https://cwiki.apache.org/confluence/display/BIGTOP/Index).
 * Git clone this repo, untar dataset and launch hive:
 
-<pre>
-<code>
-git clone git://github.com/markgrover/cloudcon-hive.git
-tar -xzvf cloudcon-hive/2008.tar.gz
-hive
-</code>
-</pre>
 
 Hive commands
 =============
 You can create tables for the datasets in Hive. These tables can directly be used in Impala, since Hive and Impala share metadata. Of course, you can create these tables directly in Impala itself too, in case you don't want to use Hive. We will only show you commands for creating tables in Hive only though.
 
-* On hive shell: Create hive table, *flight_data*:
+* On hive shell: Create hive table, *flight*:
 
 <pre>
 <code>
-CREATE TABLE flight_data(
+CREATE TABLE flight(
    year INT,
    month INT,
    day INT,
@@ -74,12 +67,21 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',';
 </code>
 </pre>
+<pre>
+
+Some time this can be create problem you can use 
+
+<code>
+create table flight(Year int,Month int,DayofMonth int,DayOfWeek int,DepTime int,CRSDepTime int,ArrTime int,CRSArrTime int,UniqueCarrier string,FlightNum int,TailNum string,ActualElapsedTime int,CRSElapsedTime int,AirTime int,ArrDelay int,DepDelay int,Origin string,Dest string,Distance int,TaxiIn int,TaxiOut int,Cancelled int,CancellationCode string,Diverted int,CarrierDelay string,WeatherDelay string,NASDelay string,SecurityDelay string,LateAircraftDelay string) row format delimited fields terminated by ',' stored as textfile; 
+</code>
+
+</pre>
 
 * Load the data into the table:
 
 <pre>
 <code>
-LOAD DATA LOCAL INPATH '2008.csv' OVERWRITE INTO TABLE flight_data;
+LOAD DATA INPATH '/user/cloudera/flight.csv' overwrite into table flight;
 </code>
 </pre>
 
@@ -88,11 +90,9 @@ LOAD DATA LOCAL INPATH '2008.csv' OVERWRITE INTO TABLE flight_data;
 <pre>
 <code>
 SHOW TABLES;
-SELECT
-   *
-FROM
-   flight_data
-LIMIT 10; 
+
+SELECT * FROM flight LIMIT 10; 
+
 </code>
 </pre>
 
@@ -100,13 +100,7 @@ LIMIT 10;
 
 <pre>
 <code>
-SELECT
-   avg(arr_delay)
-FROM
-   flight_data
-WHERE
-   month=1
-   AND origin='SFO';
+SELECT avg(arr_delay) FROM flight WHERE month=1 AND origin='SFO';
 </code>
 </pre>
 
@@ -121,6 +115,15 @@ CREATE TABLE airports(
    code STRING)
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',';
+
+
+or 
+
+
+
+CREATE TABLE airports(name STRING,country STRING,area_code INT,code STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' stored as textfile;
+
+
 </code>
 </pre>
 
@@ -128,7 +131,7 @@ FIELDS TERMINATED BY ',';
 
 <pre>
 <code>
-LOAD DATA LOCAL INPATH 'cloudcon-hive/airports.csv' OVERWRITE INTO TABLE airports;
+LOAD DATA INPATH '/user/cloudera/airport.csv' overwrite into table airports;
 </code>
 </pre>
 
@@ -136,11 +139,7 @@ LOAD DATA LOCAL INPATH 'cloudcon-hive/airports.csv' OVERWRITE INTO TABLE airport
 
 <pre>
 <code>
-SELECT
-   *
-FROM
-   airports
-LIMIT 10
+SELECT * from airports limit 10;
 </code>
 </pre>
 
@@ -148,17 +147,7 @@ LIMIT 10
 
 <pre>
 <code>
-SELECT
-   name,
-   AVG(arr_delay)
-FROM
-   flight_data f
-   INNER JOIN airports a
-   ON (f.origin=a.code)
-WHERE
-   month=1
-GROUP BY
-   name;
+SELECT name,AVG(arr_delay) FROM flight_data f INNER JOIN airports a ON (f.origin=a.code) WHERE month=1 GROUP BY name;
 </code>
 </pre>
 
@@ -179,13 +168,7 @@ impala> show tables;
 
 <pre>
 <code>
-SELECT
-   avg(arr_delay)
-FROM
-   flight_data
-WHERE
-   month=1
-   AND origin='SFO';
+SELECT avg(arr_delay) FROM flight WHERE month=1 AND origin='SFO';
 </code>
 </pre>
 
@@ -193,16 +176,7 @@ WHERE
 
 <pre>
 <code>
-SELECT
-   name,
-   AVG(arr_delay)
-FROM
-   flight_data f
-   INNER JOIN airports a
-   ON (f.origin=a.code)
-WHERE
-   month=1
-GROUP BY
-   name;
+
+   SELECT name,AVG(arr_delay) FROM flight_data f INNER JOIN airports a ON (f.origin=a.code) WHERE month=1 GROUP BY name;
 </code>
 </pre>
